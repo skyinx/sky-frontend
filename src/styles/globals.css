@@ -2,32 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #F2F3F3;
+  font-family: 'Poppins', sans-serif;
+  color: #0F0F0E;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.no-data {
+  position: absolute;
+  bottom: 40%;
+  text-align: center;
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.gooey {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  top: calc(50% - 20px);
+  left: calc(50% - 71px);
+  background: transparent;
+}
+
+.gooey .dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 12px;
+  left: 30px;
+  background: #BA0101;
+  border-radius: 50%;
+  transform: translateX(0);
+  animation: dot 1.8s infinite;
+}
+
+.gooey .dots {
+  transform: translateX(0);
+  margin-top: 12px;
+  margin-left: 50px;
+  animation: dots 1.8s infinite;
+}
+
+.gooey .dots span {
+  display: block;
+  float: left;
+  width: 10px;
+  height: 10px;
+  margin-left: 12px;
+  background: #BA0101;
+  border-radius: 50%;
+}
+
+@-moz-keyframes dot {
+  50% {
+    transform: translateX(72px);
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@-webkit-keyframes dot {
+  50% {
+    transform: translateX(72px);
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@-o-keyframes dot {
+  50% {
+    transform: translateX(72px);
+  }
+}
+
+@keyframes dot {
+  50% {
+    transform: translateX(72px);
+  }
+}
+
+@-moz-keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}
+
+@-webkit-keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}
+
+@-o-keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}
+
+@keyframes dots {
+  50% {
+    transform: translateX(-31px);
   }
 }
