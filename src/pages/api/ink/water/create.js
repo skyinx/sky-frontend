@@ -1,14 +1,14 @@
 import clientPromise from "@/lib/mongodb";
 
-export default async (req, res) => {
+export default async function handler(req, res) {
   try {
-    console.log("req: ", JSON.parse(req.body));
     const client = await clientPromise;
     const ink = client.db("ink");
     const water = ink.collection("water_based");
     water.insertOne({ ...JSON.parse(req.body) });
-    res.json({ code: 200, message: "Created Successfully" });
-  } catch (e) {
-    console.error(e);
+    res.status(200).json({ code: "SUCCESS", message: "Created Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ code: "ERROR", message: error.message });
   }
-};
+}

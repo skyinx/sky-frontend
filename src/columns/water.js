@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-const Columns = ({ list }) => {
+const WaterColumns = () => {
   const columns = useMemo(
     () => [
       {
@@ -29,9 +29,9 @@ const Columns = ({ list }) => {
         },
       },
     ],
-    [list]
+    []
   );
   return { columns };
 };
 
-export default Columns;
+export default WaterColumns;

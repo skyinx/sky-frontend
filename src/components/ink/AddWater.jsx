@@ -1,15 +1,16 @@
 import DrawerWrapper from "@/shared/Drawer";
 import Button from "@/widgets/Button";
+import Dropdown from "@/widgets/Dropdown";
 import Input from "@/widgets/Input";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdEdit } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 
 const defaultValues = {
   color: undefined,
-  material: [],
-  name: undefined,
-  value: undefined,
+  materials: [],
+  material: undefined,
+  percentage: undefined,
   total: "100",
 };
 
@@ -35,6 +36,8 @@ const AddWater = ({
     mode: "onChange",
   });
 
+  const [materials, setMaterials] = useState([]);
+
   const handleClear = async () => {
     await getData();
     setOpen(false);
@@ -58,6 +61,30 @@ const AddWater = ({
   //       reset({ ...defaultValues });
   //     }
   //   }, [editData]);
+
+  const loadOptions = async () => {
+    const data = await fetch("/api/ink/material/list", {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then(({ data }) => {
+        return data?.map((r) => ({
+          label: r.name,
+          value: r._id,
+        }));
+      });
+    setMaterials(data);
+  };
+
+  const filterMaterial = (opt) => {
+    return !(getValues("materials") || []).find(({ material }) => {
+      return material.value === opt.value;
+    });
+  };
+
+  useEffect(() => {
+    loadOptions();
+  }, []);
 
   return (
     <DrawerWrapper
@@ -86,25 +113,45 @@ const AddWater = ({
           rest={register("color")}
           error={errors.color?.message}
         />
+        <Input
+          label={"Total"}
+          placeholder="Enter Total (KG)"
+          rest={register("total")}
+          error={errors.total?.message}
+        />
         <div className="space-y-1">
           <label
             htmlFor="product"
             className="text-xs font-medium inline-block text-black"
           >
-            Material
+            Materials
           </label>
           <div className="flex gap-2 items-center">
-            <Input placeholder="Enter Color" rest={register("name")} />
-            <Input placeholder="Enter Color" rest={register("value")} />
+            <Dropdown
+              value={watch("material")}
+              placeholder="Select Material"
+              loadOptions={loadOptions}
+              defaultOptions={materials}
+              className="w-full"
+              filterOption={filterMaterial}
+              onChange={(opt) => setValue("material", opt)}
+            />
+            <Input
+              placeholder="Enter Percentage"
+              rest={register("percentage")}
+            />
             <Button
               outline
               onClick={() => {
-                setValue("material", [
-                  ...getValues("material"),
-                  { [getValues("name")]: getValues("value") },
+                setValue("materials", [
+                  ...(getValues("materials") || []),
+                  {
+                    material: getValues("material"),
+                    percentage: getValues("percentage"),
+                  },
                 ]);
-                setValue("name"), undefined;
-                setValue("value"), undefined;
+                setValue("material", null);
+                setValue("percentage", undefined);
               }}
               className="!h-[42px] rounded-xl"
             >
@@ -112,19 +159,26 @@ const AddWater = ({
             </Button>
           </div>
         </div>
-        <ul className="space-x-2 space-y-1 !text-xs">
-          {watch("material")?.map((m, index) => {
-            const [[name, value]] = Object.entries(m);
+        <ul className="flex-1 flex-wrap !text-xs">
+          {watch("materials")?.map((m = {}, index) => {
+            const { material, percentage } = m;
             return (
               <li
                 key={index}
-                className="group bg-gray-100 rounded-full px-1 border border-gray-900 inline-flex gap-0.5 items-center"
+                className="m-0.5 group bg-primary bg-opacity-10 rounded-lg px-1 font-semibold text-primary border border-primary inline-flex gap-0.5 items-center"
               >
                 <span className="px-1 py-1.5">
-                  {name}: {value}
+                  {material?.label} = {percentage}
                 </span>
-                <span className="cursor-pointer hidden transition-all duration-300 group-hover:block group-hover:border group-hover:border-gray-900 rounded-full p-1">
-                  <MdEdit />
+                <span
+                  className="cursor-pointer hidden transition-all opacity-0 group-hover:opacity-100 duration-1000 group-hover:block border border-primary rounded-md p-1"
+                  onClick={() => {
+                    setValue("material");
+                    setValue("percentage");
+                    setValue("materials");
+                  }}
+                >
+                  <MdClose />
                 </span>
               </li>
             );

@@ -66,7 +66,7 @@ const Pagination = ({
           <Input
             className="flex items-center justify-center py-2 text-base text-center border rounded-md outline-none !w-12 border-gray-300"
             onChange={(event) => goToPage(event)}
-            value={0}
+            value={page}
             disabled
           />
           of
@@ -84,7 +84,7 @@ const Table = ({
   columns = [],
   data = [],
   totalPages = 0,
-  page: currentPage = 0,
+  page = 0,
   limit = 10,
   loading = false,
   onPaginationChange = () => false,
@@ -96,17 +96,8 @@ const Table = ({
   pagination = true,
   className = "",
 }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    setPageSize,
-  } = useTable({
-    columns,
-    data: data,
-  });
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
+    useTable({ columns, data });
 
   return (
     <div className="relative overflow-hidden bg-white border rounded-lg border-gray-300 flex flex-col justify-between">
@@ -168,8 +159,7 @@ const Table = ({
           <Pagination
             pageLimit={pageLimit}
             setPageLimit={setPageLimit}
-            setPageSize={setPageSize}
-            page={0}
+            page={page}
             limit={limit}
             getData={getData}
             totalPages={totalPages}

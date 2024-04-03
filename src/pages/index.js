@@ -1,5 +1,5 @@
+import WaterColumns from "@/columns/water";
 import AddWater from "@/components/ink/AddWater";
-import Columns from "@/hooks/ink/columns";
 import Wrapper from "@/layout/Wrapper";
 import clientPromise from "@/lib/mongodb";
 import Button from "@/widgets/Button";
@@ -45,6 +45,8 @@ export default function Home({ data }) {
       }),
     });
   };
+
+  
   return (
     <Wrapper
       title="Water Based"
@@ -71,7 +73,7 @@ export default function Home({ data }) {
     >
       <Table
         columns={
-          Columns({
+          WaterColumns({
             list: data,
           }).columns
         }

@@ -1,5 +1,6 @@
 import React from "react";
 import { IoColorFill } from "react-icons/io5";
+import { LuContainer } from "react-icons/lu";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,14 +12,19 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
       title: "Water Based",
       href: "/",
     },
+    {
+      icon: <LuContainer className="w-6 h-6 group-hover:animate-wiggle" />,
+      title: "Materials",
+      href: "/material",
+    },
   ];
   const { pathname } = useRouter();
   return (
     <main className={`min-h-screen grid grid-cols-10 gap-2.5 p-2.5`}>
       <section className="col-span-2 border p-2 rounded-xl bg-white flex flex-col gap-2">
-        <div className="flex p-2 py-2 justify-center items-center">
+        <div className="flex p-2 py-2 justify-center items-center border rounded-lg border-primary z-0 bg-primary bg-opacity-10">
           {/* <img src="/img/logo-png.png" alt="N" className="w-10 h-10" /> */}
-          <p className="text-primary font-bold text-2xl text-center">Sky Ink</p>
+          <p className="text-primary font-bold text-2xl text-center">Sky Inx</p>
         </div>
         <div className="flex flex-col justify-between h-full">
           <ul className="flex flex-col gap-1.5">
@@ -32,7 +38,7 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
                         : "hover:border hover:border-primary hover:text-black"
                     }`}
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-3">
                       {icon} {title}
                     </span>
                     <HiOutlineChevronRight

@@ -64,7 +64,7 @@ const DrawerWrapper = ({
                   </div>
                 </Transition.Child>
                 <div className="h-full flex flex-col shadow-xl overflow-y-scroll bg-white">
-                  <div className="px-4 sm:px-6 py-5 bg-gray-100 h-16">
+                  <div className="px-4 sm:px-6 py-5 bg-light border-b h-16">
                     <Dialog.Title className="text-base font-bold">
                       {title}
                     </Dialog.Title>
@@ -74,7 +74,7 @@ const DrawerWrapper = ({
                     {children}
                     {/* /End replace */}
                   </div>
-                  <div className="modal-footer px-4 py-4 bg-gray-100 flex items-center justify-end gap-3">
+                  <div className="modal-footer px-4 py-4 bg-light border-t flex items-center justify-end gap-3">
                     {modalFooter}
                   </div>
                 </div>
