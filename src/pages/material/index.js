@@ -2,27 +2,14 @@ import MaterialColumns from "@/columns/material";
 import AddMaterial from "@/components/ink/AddMaterial";
 import Wrapper from "@/layout/Wrapper";
 import { Material } from "@/models/ink/Material";
-import connectMongo from "@/utils/connectMongo";
-import { getAllDocuments } from "@/utils/dbService";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import Table from "@/widgets/Table";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export const getServerSideProps = async () => {
-  try {
-    await connectMongo();
-    const materials = await getAllDocuments(Material, {}, {});
-    return { props: { materials: JSON.stringify(materials) } };
-  } catch (e) {
-    console.error(e);
-    return { props: { materials: "{}" } };
-  }
-};
-
-export default function MaterialPage({ materials }) {
-  const { data = [], paginator = {} } = JSON.parse(materials);
+export default function MaterialPage() {
+  const { data = [], paginator = {} } = JSON.parse("{}");
 
   const router = useRouter();
   console.log("data: ", data, paginator, JSON.parse(materials));
