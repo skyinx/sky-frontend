@@ -12,7 +12,7 @@ export default function MaterialPage() {
   const { data = [], paginator = {} } = JSON.parse("{}");
 
   const router = useRouter();
-  console.log("data: ", data, paginator, JSON.parse(materials));
+  
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
