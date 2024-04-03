@@ -1,15 +1,13 @@
 import WaterColumns from "@/columns/water";
 import AddWater from "@/components/ink/AddWater";
 import Wrapper from "@/layout/Wrapper";
-import clientPromise from "@/lib/mongodb";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import Table from "@/widgets/Table";
 import { useState } from "react";
 
-export default function Home({ data }) {
-  console.log("props: ", data);
-  // const [search, setSearch] = useState("");
+export default function Home() {
+  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const handleCreate = async () => {
     await fetch("api/ink/water/create", {
