@@ -15,13 +15,13 @@ const defaultValues = {
 };
 
 const AddWater = ({
-  open,
-  setOpen,
-  getData,
-  loading,
-  setLoading,
-  editData,
-  setEditData,
+  open = false,
+  setOpen = () => {},
+  getData = () => {},
+  loading = false,
+  setLoading = () => {},
+  editData = null,
+  setEditData = () => {},
 }) => {
   const {
     reset,
@@ -46,11 +46,26 @@ const AddWater = ({
   };
 
   const onSubmit = async (values) => {
+    console.log("values: ", values);
     try {
       setLoading(true);
-      console.log("values: ", values);
+      delete values?.material;
+      delete values?.percentage;
+      await fetch("api/ink/water/create", {
+        method: "POST",
+        body: JSON.stringify({
+          ...values,
+          materials: values?.materials.map((m) => ({
+            material: m.material.value,
+            percentage: m.percentage,
+          })),
+        }),
+      });
+    } catch (error) {
+      console.error("Add Water Error: ", error);
     } finally {
       handleClear();
+      setLoading(false);
     }
   };
 

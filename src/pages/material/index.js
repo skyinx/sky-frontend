@@ -1,25 +1,49 @@
 import MaterialColumns from "@/columns/material";
 import AddMaterial from "@/components/ink/AddMaterial";
+import { LIMIT } from "@/constants/common";
 import Wrapper from "@/layout/Wrapper";
-import { Material } from "@/models/ink/Material";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import Table from "@/widgets/Table";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function MaterialPage() {
-  const { data = [], paginator = {} } = JSON.parse("{}");
+  const [material, setMaterial] = useState([]);
+  const { data = [], paginator = {} } = material;
 
-  const router = useRouter();
-  
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [limit, setLimit] = useState(LIMIT);
 
-  const getData = () => {
-    router.replace(router.asPath);
+  const getData = async (page) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/ink/material/list`, {
+        method: "POST",
+        body: JSON.stringify({
+          query: {
+            name: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          options: {
+            page,
+            limit,
+          },
+        }),
+      }).then((res) => res.json());
+      setMaterial(res);
+    } catch (error) {
+      console.error("Get Material: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
+  useEffect(() => {
+    getData();
+  }, [search, limit]);
 
   return (
     <Wrapper
@@ -53,9 +77,9 @@ export default function MaterialPage() {
         }
         data={data}
         getData={getData}
-        onPaginationChange={() => {}}
-        pageLimit={20}
-        setPageLimit={() => {}}
+        loading={loading}
+        pageLimit={limit}
+        setPageLimit={setLimit}
         {...paginator}
       />
       <AddMaterial

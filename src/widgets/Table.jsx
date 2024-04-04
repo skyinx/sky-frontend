@@ -13,6 +13,7 @@ const Pagination = ({
   pageLimit,
   getData,
   setPageLimit,
+  showRecords = false,
 }) => {
   const gotoPreviousPage = () => {
     getData(page - 1);
@@ -33,24 +34,24 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center gap-3">
-        <span className="text-xs">View</span>
+        {showRecords ? <span className="text-xs">View</span> : ""}
         <select
           defaultValue={10}
           value={pageLimit}
-          className="px-2 py-2 text-xs bg-transparent border rounded-md outline-none h-9 border-gray-300"
+          className="px-2 py-2 text-xs bg-transparent border rounded-xl outline-none h-11 border-gray-300"
           onChange={handleLimitChange}
         >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
+          {[10, 15, 20, 30, 50].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
           ))}
         </select>
-        <span className="text-xs">Records per page</span>
+        {showRecords ? <span className="text-xs">Records per page</span> : ""}
       </div>
 
       <div className="flex items-center gap-3">
-        {page ? (
+        {showRecords && page ? (
           <span className="text-xs">
             Showing {(page - 1) * limit + 1 || 0} to {limit || 0} of{" "}
             {count || 0} records
@@ -64,7 +65,7 @@ const Pagination = ({
         <div className="flex items-center gap-1 text-xs">
           Page
           <Input
-            className="flex items-center justify-center py-2 text-base text-center border rounded-md outline-none !w-12 border-gray-300"
+            className="h-11 flex items-center justify-center py-2 text-base text-center border rounded-md outline-none !w-12 border-gray-300"
             onChange={(event) => goToPage(event)}
             value={page}
             disabled
@@ -87,7 +88,6 @@ const Table = ({
   page = 0,
   limit = 10,
   loading = false,
-  onPaginationChange = () => false,
   count = 0,
   getData,
   noDataText = "NO DATA FOUND",
@@ -163,8 +163,8 @@ const Table = ({
             limit={limit}
             getData={getData}
             totalPages={totalPages}
-            onPaginationChange={onPaginationChange}
             count={count}
+            showRecords={false}
           />
         </div>
       ) : (

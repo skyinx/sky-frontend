@@ -1,52 +1,55 @@
 import WaterColumns from "@/columns/water";
 import AddWater from "@/components/ink/AddWater";
+import { LIMIT } from "@/constants/common";
 import Wrapper from "@/layout/Wrapper";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import Table from "@/widgets/Table";
-import { useState } from "react";
-import clientPromise from "@/lib/mongodb";
+import getConfig from "next/config";
+import { useEffect, useState } from "react";
+
+const { publicRuntimeConfig } = getConfig();
 
 export const getServerSideProps = async () => {
   try {
-    const client = await clientPromise;
-    const db = client.db("ink");
-    const data = await db
-      .collection("water_based")
-      .find({})
-      .limit(20)
-      .toArray();
+    const water = await fetch(
+      `${publicRuntimeConfig.PUBLIC_NEXT_BASE_URL}/api/ink/water/list`,
+      {
+        method: "POST",
+      }
+    ).then((res) => res.json());
     return {
-      props: { data: JSON.parse(JSON.stringify(data)) },
+      props: { water: JSON.stringify(water) },
     };
   } catch (e) {
     console.error(e);
-    return { props: { data: [] } };
+    return { props: { water: "{}" } };
   }
 };
 
-export default function Home({ data }) {
-  console.log("props: ", data);
+export default function Home({ water = "{}" }) {
+  const { data = [], paginator = {} } = JSON.parse(water);
+  console.log("data: ", data);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
-  const handleCreate = async () => {
-    await fetch("api/ink/water/create", {
+  const [limit, setLimit] = useState(LIMIT);
+
+  const getData = async (page) => {
+    console.log("page: ", page);
+    await fetch(`/api/ink/water/list`, {
       method: "POST",
       body: JSON.stringify({
-        color: "White Paste",
-        total: "100",
-        material: [
-          { TIO2: 60 },
-          { "W&D-193": 2 },
-          { DEFORMER: 0.2 },
-          { "HPD-96": 27.8 },
-          { WATER: 10 },
-        ],
+        options: {
+          populate: ["materials.material"],
+        },
       }),
-    });
+    }).then((res) => res.json());
   };
 
-  
+  useEffect(() => {
+    handleGet();
+  }, []);
+
   return (
     <Wrapper
       title="Water Based"
@@ -77,11 +80,11 @@ export default function Home({ data }) {
             list: data,
           }).columns
         }
-        getData={() => {}}
         data={data}
-        onPaginationChange={() => {}}
-        pageLimit={20}
-        setPageLimit={() => {}}
+        getData={getData}
+        pageLimit={limit}
+        setPageLimit={setLimit}
+        {...paginator}
       />
       <AddWater editData={false} setOpen={setOpen} open={open} />
     </Wrapper>

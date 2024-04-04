@@ -1,6 +1,5 @@
 import { paginationLabels } from "@/constants/pagination";
 import mongoose from "mongoose";
-import mongooseIdValidator from "mongoose-id-validator";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoosePaginate.paginate.options = {
@@ -12,27 +11,26 @@ const waterSchema = new Schema(
   {
     color: {
       type: String,
-      required: [true, "Please provide a name."],
+      index: true,
     },
     materials: [
       {
         material: { type: Schema.Types.ObjectId, ref: "Material" },
         percentage: {
-          type: Number,
-          default: 0,
+          type: String,
+          default: "0",
         },
       },
     ],
     total: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: "",
     },
   },
   { timestamps: true }
 );
 
 waterSchema.plugin(mongoosePaginate);
-waterSchema.plugin(mongooseIdValidator);
 
 export const Water =
-  mongoose.models.Water || mongoose.model("Water", waterSchema, "materials");
+  mongoose.models?.Water || mongoose.model("Water", waterSchema, "waters");

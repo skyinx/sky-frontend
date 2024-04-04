@@ -1,6 +1,5 @@
 import { paginationLabels } from "@/constants/pagination";
 import mongoose from "mongoose";
-import mongooseIdValidator from "mongoose-id-validator";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoosePaginate.paginate.options = {
@@ -22,8 +21,7 @@ const materialSchema = new Schema(
 );
 
 materialSchema.plugin(mongoosePaginate);
-materialSchema.plugin(mongooseIdValidator);
 
 export const Material =
-  mongoose.models.Material ||
+  mongoose.models?.Material ||
   mongoose.model("Material", materialSchema, "materials");
