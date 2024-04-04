@@ -11,16 +11,17 @@ const WaterColumns = () => {
         Header: "Material",
         accessor: "material",
         Cell: ({ row: { original } }) => {
+          console.log("original: ", original);
           return (
-            <div className="space-x-2 space-y-1 text-xxs">
-              {original?.material?.map((m) => {
-                const [[key, value]] = Object.entries(m);
+            <div className="space-x-2 space-y-1">
+              {original?.materials?.map((m, key) => {
+                const { material, percentage } = m;
                 return (
                   <p
                     key={key}
-                    className="bg-gray-100 rounded-full px-2 py-1 inline-block border border-gray-900"
+                    className="text-xs bg-gray-100 rounded-full px-2 py-1 inline-block border border-gray-900"
                   >
-                    {key}: {value}%
+                    {material?.name}: {percentage}%
                   </p>
                 );
               })}

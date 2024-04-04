@@ -5,50 +5,49 @@ import Wrapper from "@/layout/Wrapper";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import Table from "@/widgets/Table";
-import getConfig from "next/config";
 import { useEffect, useState } from "react";
 
-const { publicRuntimeConfig } = getConfig();
-
-export const getServerSideProps = async () => {
-  try {
-    const water = await fetch(
-      `${publicRuntimeConfig.PUBLIC_NEXT_BASE_URL}/api/ink/water/list`,
-      {
-        method: "POST",
-      }
-    ).then((res) => res.json());
-    return {
-      props: { water: JSON.stringify(water) },
-    };
-  } catch (e) {
-    console.error(e);
-    return { props: { water: "{}" } };
-  }
-};
-
-export default function Home({ water = "{}" }) {
-  const { data = [], paginator = {} } = JSON.parse(water);
-  console.log("data: ", data);
+export default function Water() {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(LIMIT);
+  const [water, setWater] = useState({});
+
+  const { data = [], paginator = {} } = water;
 
   const getData = async (page) => {
-    console.log("page: ", page);
-    await fetch(`/api/ink/water/list`, {
-      method: "POST",
-      body: JSON.stringify({
-        options: {
-          populate: ["materials.material"],
-        },
-      }),
-    }).then((res) => res.json());
+    try {
+      setLoading(true);
+
+      await fetch(`/api/ink/water/list`, {
+        method: "POST",
+        body: JSON.stringify({
+          query: {
+            color: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          options: {
+            populate: ["materials.material"],
+            page,
+            limit,
+          },
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => setWater(res));
+    } catch (error) {
+      console.error("Get Water Error: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    handleGet();
-  }, []);
+    getData();
+  }, [search, limit]);
 
   return (
     <Wrapper
@@ -84,6 +83,7 @@ export default function Home({ water = "{}" }) {
         getData={getData}
         pageLimit={limit}
         setPageLimit={setLimit}
+        loading={loading}
         {...paginator}
       />
       <AddWater editData={false} setOpen={setOpen} open={open} />

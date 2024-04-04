@@ -77,9 +77,20 @@ const AddWater = ({
   //     }
   //   }, [editData]);
 
-  const loadOptions = async () => {
+  const loadOptions = async (search = "", callback) => {
     const data = await fetch("/api/ink/material/list", {
       method: "POST",
+      body: JSON.stringify({
+        query: {
+          name: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        options: {
+          limit: 5,
+        },
+      }),
     })
       .then((res) => res.json())
       .then(({ data }) => {
@@ -88,6 +99,7 @@ const AddWater = ({
           value: r._id,
         }));
       });
+    callback?.(data);
     setMaterials(data);
   };
 
