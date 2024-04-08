@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const SEARCH = ["name"];
 
-function useInk() {
+function usePigment() {
   const [data, setData] = useState([]);
   const [paginator, setPaginator] = useState([]);
   const [search, setSearch] = useState("");
@@ -18,18 +18,18 @@ function useInk() {
     try {
       setLoading(true);
       await post({
-        module: "ink",
+        module: "pigment",
         action: "list",
         data: {
           query: { ...getQuery(SEARCH, search) },
-          options: { populate: ["products.product"], page, limit: pageLimit },
+          options: { page, limit: pageLimit },
         },
       }).then(({ data = [], paginator = {} }) => {
         setData(data);
         setPaginator(paginator);
       });
     } catch (error) {
-      console.error("Get Ink: ", error);
+      console.error("Get Pigment: ", error);
     } finally {
       setLoading(false);
     }
@@ -54,4 +54,4 @@ function useInk() {
   };
 }
 
-export default useInk;
+export default usePigment;

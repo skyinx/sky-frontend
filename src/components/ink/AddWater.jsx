@@ -46,7 +46,6 @@ const AddWater = ({
   };
 
   const onSubmit = async (values) => {
-    console.log("values: ", values);
     try {
       setLoading(true);
       delete values?.material;

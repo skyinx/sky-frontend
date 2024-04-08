@@ -1,21 +1,23 @@
-import React from "react";
+import { post } from "@/api";
+import { getQuery } from "@/utils/helper";
+import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 
 const Dropdown = ({
-  label = "",
-  className,
   id,
   value,
-  placeholder,
-  defaultOptions,
-  onChange,
-  loadOptions,
-  onInputChange = () => {},
   error,
-  isClearable = false,
   mandatory,
+  className,
+  filter = [],
+  label = "",
+  module = "",
+  placeholder,
+  action = "list",
   isMulti = false,
+  isClearable = false,
   isDisabled = false,
+  searchFields = ["name"],
   rest,
   ...other
 }) => {
@@ -83,6 +85,40 @@ const Dropdown = ({
     }),
   };
 
+  const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const loadOptions = async (search = "", callback) => {
+    const data = await post({
+      module,
+      action,
+      data: {
+        query: {
+          ...getQuery(searchFields, search),
+        },
+        options: {
+          limit: 5,
+        },
+      },
+    }).then(({ data }) => {
+      return data?.map((r) => ({
+        ...r,
+        label: r.name,
+        value: r._id,
+      }));
+    });
+    callback?.(data);
+  };
+
+  const filterOption = (opt) => {
+    return !filter.find(({ value }) => {
+      return value === opt.value;
+    });
+  };
+
+  useEffect(() => {
+    loadOptions("", setDefaultOptions);
+  }, []);
+
   return (
     <div className={className}>
       {label?.length ? (
@@ -93,17 +129,16 @@ const Dropdown = ({
         ""
       )}
       <AsyncSelect
-        styles={customStyles}
-        isClearable={isClearable}
         id={id}
-        placeholder={placeholder}
         value={value}
-        onInputChange={onInputChange}
-        onChange={onChange}
-        loadOptions={loadOptions}
         isMulti={isMulti}
-        defaultOptions={defaultOptions}
+        styles={customStyles}
         isDisabled={isDisabled}
+        isClearable={isClearable}
+        placeholder={placeholder}
+        loadOptions={loadOptions}
+        filterOption={filterOption}
+        defaultOptions={defaultOptions}
         {...rest}
         {...other}
       />

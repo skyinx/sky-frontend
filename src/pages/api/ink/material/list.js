@@ -1,4 +1,4 @@
-import { Material } from "@/models/ink/Material";
+import { Material } from "@/models/Material";
 import connectMongo from "@/utils/connectMongo";
 import { getAllDocuments } from "@/utils/dbService";
 

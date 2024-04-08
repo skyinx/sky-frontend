@@ -30,7 +30,7 @@ const Input = ({
       <input
         placeholder={placeholder}
         className={`text-left bg-white focus:outline-none p-3 font-medium text-xs rounded-xl placeholder:text-gray-400 placeholder:font-normal w-full focus:border focus:border-primary text-black transition border border-gray-300 ${className} ${
-          disabled && "bg-gray-600"
+          disabled && "bg-gray-50 text-gray-400 cursor-not-allowed"
         }`}
         maxLength={maxLength}
         minLength={minLength}

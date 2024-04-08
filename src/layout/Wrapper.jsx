@@ -1,22 +1,35 @@
 import React, { useState } from "react";
-import { IoColorFill, IoMenu, IoClose } from "react-icons/io5";
-import { LuContainer } from "react-icons/lu";
+import {
+  IoColorFill,
+  IoMenu,
+  IoClose,
+  IoColorFilterSharp,
+} from "react-icons/io5";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import DrawerWrapper from "@/shared/Drawer";
+import { IoMdColorPalette } from "react-icons/io";
+import { BiSolidColor } from "react-icons/bi";
 
 const Wrapper = ({ title, children, headerDetails = "" }) => {
   const list = [
     {
       icon: <IoColorFill className="w-6 h-6 group-hover:animate-wiggle" />,
-      title: "Water Based",
-      href: "/",
+      title: "Ink",
+      href: "/ink",
     },
     {
-      icon: <LuContainer className="w-6 h-6 group-hover:animate-wiggle" />,
-      title: "Materials",
-      href: "/material",
+      icon: (
+        <IoColorFilterSharp className="w-6 h-6 group-hover:animate-wiggle" />
+      ),
+      title: "Product",
+      href: "/product",
+    },
+    {
+      icon: <BiSolidColor className="w-6 h-6 group-hover:animate-wiggle" />,
+      title: "Pigment",
+      href: "/pigment",
     },
   ];
 

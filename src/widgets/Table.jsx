@@ -84,17 +84,11 @@ const Pagination = ({
 const Table = ({
   columns = [],
   data = [],
-  totalPages = 0,
-  page = 0,
-  limit = 10,
   loading = false,
-  count = 0,
-  getData,
   noDataText = "NO DATA FOUND",
-  pageLimit = 10,
-  setPageLimit = () => false,
   pagination = true,
   className = "",
+  paginator = {},
 }) => {
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
     useTable({ columns, data });
@@ -156,16 +150,7 @@ const Table = ({
       </div>
       {pagination ? (
         <div className="border-t border-gray-300">
-          <Pagination
-            pageLimit={pageLimit}
-            setPageLimit={setPageLimit}
-            page={page}
-            limit={limit}
-            getData={getData}
-            totalPages={totalPages}
-            count={count}
-            showRecords={false}
-          />
+          <Pagination {...paginator} showRecords={false} />
         </div>
       ) : (
         ""

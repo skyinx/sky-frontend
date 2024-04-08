@@ -18,7 +18,7 @@ export default function MaterialPage() {
 
   const getData = async (page) => {
     try {
-      setLoading(true);
+      setLoading(true);k
       const res = await fetch(`/api/ink/material/list`, {
         method: "POST",
         body: JSON.stringify({

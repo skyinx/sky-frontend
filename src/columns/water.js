@@ -11,7 +11,6 @@ const WaterColumns = () => {
         Header: "Material",
         accessor: "material",
         Cell: ({ row: { original } }) => {
-          console.log("original: ", original);
           return (
             <div className="space-x-2 space-y-1">
               {original?.materials?.map((m, key) => {

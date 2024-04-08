@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const SEARCH = ["name"];
 
-function useInk() {
+function useProduct() {
   const [data, setData] = useState([]);
   const [paginator, setPaginator] = useState([]);
   const [search, setSearch] = useState("");
@@ -18,7 +18,7 @@ function useInk() {
     try {
       setLoading(true);
       await post({
-        module: "ink",
+        module: "product",
         action: "list",
         data: {
           query: { ...getQuery(SEARCH, search) },
@@ -29,7 +29,7 @@ function useInk() {
         setPaginator(paginator);
       });
     } catch (error) {
-      console.error("Get Ink: ", error);
+      console.error("Get Product: ", error);
     } finally {
       setLoading(false);
     }
@@ -54,4 +54,4 @@ function useInk() {
   };
 }
 
-export default useInk;
+export default useProduct;
