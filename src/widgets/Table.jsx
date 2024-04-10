@@ -107,7 +107,7 @@ const Table = ({
                 {headerGroup.headers.map((column, newIndex) => (
                   <th
                     key={newIndex}
-                    className="text-xs p-3 h-11 text-left text-white bg-primary border-b border-r last:border-r-0 border-white visible font-semibold whitespace-nowrap sticky top-0 z-10"
+                    className="text-xs p-3 h-11 text-left text-white bg-primary border border-r-white last:border-r-0 border-primary visible font-semibold whitespace-nowrap sticky top-0 z-10"
                     style={column.style}
                     {...column.getHeaderProps()}
                   >

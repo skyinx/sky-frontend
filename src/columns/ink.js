@@ -1,4 +1,5 @@
 import Delete from "@/components/common/delete";
+import GetNeededMaterial from "@/components/ink/GetNeededMaterial";
 import { useMemo } from "react";
 import { MdEdit } from "react-icons/md";
 
@@ -46,6 +47,7 @@ const InkColumns = (props) => {
                 }}
               />
               <Delete {...props} module="ink" id={original?._id} />
+              <GetNeededMaterial data={original} />
             </div>
           );
         },
