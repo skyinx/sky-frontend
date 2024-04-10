@@ -24,6 +24,10 @@ const productSchema = new Schema(
           type: Number,
           default: 0,
         },
+        totalPrice: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
     status: {

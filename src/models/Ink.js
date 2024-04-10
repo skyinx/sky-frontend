@@ -24,8 +24,27 @@ const inkSchema = new Schema(
           type: Number,
           default: 0,
         },
+        totalPrice: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
+    pigment: {
+      data: { type: Schema.Types.ObjectId, ref: "Pigment" },
+      percentage: {
+        type: Number,
+        default: 0,
+      },
+      price: {
+        type: Number,
+        default: 0,
+      },
+      totalPrice: {
+        type: Number,
+        default: 0,
+      },
+    },
     price: {
       type: Number,
       default: 0,

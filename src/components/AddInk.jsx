@@ -52,27 +52,54 @@ const AddInk = ({
     setTimeout(() => setEditData(null), 200);
   };
 
+  const formatValue = (value) => {
+    return Number(parseFloat(value ?? 0).toFixed(2));
+  };
+
+  const getPayload = (values) => {
+    const obj = { price: 0, percentage: 0 };
+    const products = values.products?.map((item) => {
+      const price = formatValue(item?.price);
+      const percentage = formatValue(item?.percentage);
+      const totalPrice = formatValue(price * percentage);
+      obj.price = formatValue(obj.price + totalPrice);
+      obj.percentage = formatValue(obj.percentage + percentage);
+      return {
+        product: item?.value,
+        price,
+        percentage,
+        totalPrice,
+      };
+    });
+    const pigmentPrice = formatValue(values?.pigment?.price);
+    const pigmentPer = formatValue(values?.pigment?.percentage);
+    const pigment = {
+      data: values?.pigment?.value,
+      percentage: pigmentPer,
+      price: pigmentPrice,
+      totalPrice: formatValue(pigmentPrice * pigmentPer),
+    };
+    obj.price = formatValue(obj.price + pigment?.totalPrice);
+    obj.percentage = formatValue(obj.percentage + pigmentPer);
+    const payload = {
+      name: values.name,
+      pigment,
+      products,
+      price: formatValue(obj.price / 100),
+      percentage: formatValue(obj.percentage),
+    };
+    return payload;
+  };
+
   const onSubmit = async (values) => {
     try {
-      const primary = ["name", "price", "percentage"];
-      const products = values.products?.map((item) => ({
-        product: item?.value,
-        percentage: item?.percentage,
-        price: item?.price,
-      }));
       setLoading(true);
-      const payload = {
-        ...primary.map((key) => ({ [key]: values[key] })),
-        products,
-      };
-      console.log("payload: ", payload);
+      const payload = getPayload(values);
       await post({
         module: "ink",
         action: values?._id ? "update" : "create",
         parameters: [values?._id],
-        data: {
-          ...values,
-        },
+        data: payload,
       });
     } catch (error) {
       console.error("Add Ink Error: ", error);
@@ -86,29 +113,30 @@ const AddInk = ({
   useEffect(() => {
     if (open) {
       if (editData) {
-        reset({ ...editData });
+        reset({
+          ...editData,
+          pigment: {
+            ...editData.pigment,
+            label: editData.pigment?.data?.name,
+            value: editData.pigment?.data?._id,
+          },
+          products: [
+            ...(editData.products ?? [])?.map((item) => ({
+              ...item,
+              label: item?.product?.name,
+              value: item?.product?._id,
+            })),
+          ],
+        });
       } else {
         reset({ ...defaultValues });
       }
     }
   }, [editData, open]);
 
-  const handlePrice = (arr = []) => {
-    const { price, percentage } = arr.reduce(
-      (acc, { price = 0, percentage = 0 }) => ({
-        price: acc?.price + price,
-        percentage: acc?.percentage + percentage,
-      }),
-      { price: 0, percentage: 0 }
-    );
-    setValue("price", price / 100);
-    setValue("percentage", percentage);
-  };
-
   const handleRemove = (index) => {
     const list = getValues("products")?.filter((_, idx) => idx !== index);
     setValue("products", list);
-    handlePrice(list);
   };
 
   const handleAdd = () => {
@@ -118,12 +146,9 @@ const AddInk = ({
       ...(getValues("products") || []),
       {
         ...product,
-        product: product?.value,
-        price: product?.price * productPer,
         percentage: productPer,
       },
     ];
-    handlePrice(products);
     setValue("products", products);
     setValue("product", null);
     setValue("productPer", undefined);
@@ -156,6 +181,29 @@ const AddInk = ({
           rest={register("name")}
           error={errors.name?.message}
         />
+        <div>
+          <label
+            htmlFor="product"
+            className="text-xs font-medium inline-block text-black"
+          >
+            Pigment
+          </label>
+          <div className="flex gap-2 items-center">
+            <Dropdown
+              module="pigment"
+              className="w-full"
+              value={watch("pigment")}
+              rest={register("pigment")}
+              placeholder="Select Pigment"
+              onChange={(opt) => setValue("pigment", opt)}
+            />
+            <Input
+              type="number"
+              placeholder="Enter Percentage"
+              rest={register("pigment.percentage")}
+            />
+          </div>
+        </div>
         <div>
           <label
             htmlFor="product"

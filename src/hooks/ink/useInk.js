@@ -22,7 +22,11 @@ function useInk() {
         action: "list",
         data: {
           query: { ...getQuery(SEARCH, search) },
-          options: { populate: ["products.product"], page, limit: pageLimit },
+          options: {
+            populate: ["products.product", "pigment.data"],
+            page,
+            limit: pageLimit,
+          },
         },
       }).then(({ data = [], paginator = {} }) => {
         setData(data);

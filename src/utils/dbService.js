@@ -64,6 +64,7 @@ const deleteDocument = (model, id) =>
  */
 const getAllDocuments = async (model, query, options) => {
   query = await getFilterQuery(query);
+  options = { ...options, sort: { createdAt: -1 } };
   return new Promise((resolve, reject) => {
     model.paginate(query, options, (err, data) => {
       if (err) reject(err);

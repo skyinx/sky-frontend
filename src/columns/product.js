@@ -15,17 +15,34 @@ const ProductColumns = (props) => {
         accessor: "price",
       },
       {
+        Header: "Sub Products",
+        accessor: "products.length",
+        Cell: ({ row: { original } }) => {
+          return original.products.length > 0 ? (
+            <p className="bg-opacity-10 text-primary w-6 h-6 flex items-center justify-center rounded-full bg-primary">
+              {original.products.length}
+            </p>
+          ) : (
+            "-"
+          );
+        },
+      },
+      {
+        Header: "Percentage",
+        accessor: "percentage",
+      },
+      {
         Header: "Action",
         accessor: "action",
         Cell: ({ row: { original } }) => {
           return (
             <div className="flex items-center justify-start gap-1">
-              {/* <MdEdit
+              <MdEdit
                 className="w-5 h-5 cursor-pointer"
                 onClick={() => {
                   setOpen(true), setEditData(original);
                 }}
-              /> */}
+              />
               <Delete {...props} module="product" id={original?._id} />
             </div>
           );

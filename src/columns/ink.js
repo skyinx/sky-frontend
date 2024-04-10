@@ -11,6 +11,25 @@ const InkColumns = (props) => {
         accessor: "name",
       },
       {
+        Header: "Pigment",
+        accessor: "pigment.data.name",
+      },
+      {
+        Header: "Products",
+        accessor: "products.length",
+        Cell: ({ row: { original } }) => {
+          return (
+            <p className="bg-opacity-10 text-primary w-6 h-6 flex items-center justify-center rounded-full bg-primary">
+              {original.products.length}
+            </p>
+          );
+        },
+      },
+      {
+        Header: "Percentage (%)",
+        accessor: "percentage",
+      },
+      {
         Header: "Price",
         accessor: "price",
       },
