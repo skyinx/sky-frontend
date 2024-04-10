@@ -6,7 +6,6 @@ export const Switch = ({
   value = false,
   onChange = () => {},
 }) => {
-  console.log("log");
   const [enabled, setEnabled] = useState(value);
   return (
     <div className="flex flex-col space-y-1">

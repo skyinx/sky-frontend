@@ -41,7 +41,6 @@ const AddPigment = ({
   };
 
   const onSubmit = async (values) => {
-    console.log("values: ", values);
     try {
       setLoading(true);
       await post({
