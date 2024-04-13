@@ -30,21 +30,23 @@ const inkSchema = new Schema(
         },
       },
     ],
-    pigment: {
-      data: { type: Schema.Types.ObjectId, ref: "Pigment" },
-      percentage: {
-        type: Number,
-        default: 0,
+    pigments: [
+      {
+        pigment: { type: Schema.Types.ObjectId, ref: "Pigment" },
+        percentage: {
+          type: Number,
+          default: 0,
+        },
+        price: {
+          type: Number,
+          default: 0,
+        },
+        totalPrice: {
+          type: Number,
+          default: 0,
+        },
       },
-      price: {
-        type: Number,
-        default: 0,
-      },
-      totalPrice: {
-        type: Number,
-        default: 0,
-      },
-    },
+    ],
     price: {
       type: Number,
       default: 0,
@@ -54,7 +56,7 @@ const inkSchema = new Schema(
       default: 100,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 inkSchema.plugin(mongoosePaginate);

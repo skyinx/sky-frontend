@@ -17,4 +17,20 @@ const getQuery = (searchFields, searchValue = "") => {
   return query;
 };
 
-export { getQuery };
+const downloadPDF = async (data = {}) => {
+  const response = await fetch("/api/generate-pdf", {
+    body: JSON.stringify(data),
+    method: "post",
+  });
+  const name = data?.name
+    ?.replace(/\s+/g, " ")
+    .replace(/ /g, "-")
+    .toLowerCase();
+  const blob = await response.blob();
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.download = `${name}.pdf`;
+  link.click();
+};
+
+export { getQuery, downloadPDF };

@@ -13,14 +13,21 @@ const InkColumns = (props) => {
       },
       {
         Header: "Pigment",
-        accessor: "pigment.data.name",
+        accessor: "pigments.length",
+        Cell: ({ row: { original } }) => {
+          return (
+            <p className="flex h-6 w-6 items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary">
+              {original.pigments.length}
+            </p>
+          );
+        },
       },
       {
         Header: "Products",
         accessor: "products.length",
         Cell: ({ row: { original } }) => {
           return (
-            <p className="bg-opacity-10 text-primary w-6 h-6 flex items-center justify-center rounded-full bg-primary">
+            <p className="flex h-6 w-6 items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary">
               {original.products.length}
             </p>
           );
@@ -41,7 +48,7 @@ const InkColumns = (props) => {
           return (
             <div className="flex items-center justify-start gap-1">
               <MdEdit
-                className="w-5 h-5 cursor-pointer"
+                className="h-5 w-5 cursor-pointer"
                 onClick={() => {
                   setOpen(true), setEditData(original);
                 }}
@@ -53,7 +60,7 @@ const InkColumns = (props) => {
         },
       },
     ],
-    []
+    [],
   );
   return columns;
 };

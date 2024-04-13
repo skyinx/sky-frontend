@@ -33,6 +33,12 @@ const Dropdown = ({
         : "1px solid #D1D5DA !important",
       boxShadow: "none",
     }),
+    placeholder: (defaultStyles) => {
+      return {
+        ...defaultStyles,
+         textTransform: 'capitalize'
+      };
+    },
     option: (provided, { isFocused }) => ({
       ...provided,
       fontSize: 12,
@@ -53,7 +59,7 @@ const Dropdown = ({
       fontSize: 12,
       paddingInline: "12px",
       fontWeight: isFocused ? 500 : 400,
-      color: "#000000",
+      color: "#BA0101 !important",
     }),
     menuList: (base) => ({
       ...base,
@@ -122,7 +128,7 @@ const Dropdown = ({
   return (
     <div className={className}>
       {label?.length ? (
-        <label className="text-xs mb-2 inline-block font-medium text-foreground">
+        <label className="text-foreground mb-2 inline-block text-xs font-medium">
           {label} {mandatory ? <span className="text-red">*</span> : ""}
         </label>
       ) : (
@@ -142,7 +148,7 @@ const Dropdown = ({
         {...rest}
         {...other}
       />
-      {error && <p className="text-xs font-medium mt-1 text-red">{error}</p>}
+      {error && <p className="text-red mt-1 text-xs font-medium">{error}</p>}
     </div>
   );
 };

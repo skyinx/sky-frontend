@@ -23,7 +23,7 @@ function useInk() {
         data: {
           query: { ...getQuery(SEARCH, search) },
           options: {
-            populate: ["products.product", "pigment.data"],
+            populate: ["products.product", "pigments.pigment"],
             page,
             limit: pageLimit,
           },
