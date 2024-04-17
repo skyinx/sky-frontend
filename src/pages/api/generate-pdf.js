@@ -14,7 +14,15 @@ export default async function handler(req, res) {
       }
       const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
-      await page.setContent(html);
+      await page.setContent(html, { waitUntil: "networkidle0" });
+      // await page.evaluate(() => {
+      //   const script = document.createElement("script");
+      //   script.src = "https://cdn.tailwindcss.com";
+      //   document.head.appendChild(script);
+      //   return new Promise((resolve) => {
+      //     script.onload = resolve;
+      //   });
+      // });
       await page.waitForSelector("body");
       const pdfBuffer = await page.pdf({
         format: "A4",
