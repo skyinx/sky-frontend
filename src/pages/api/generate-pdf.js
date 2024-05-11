@@ -1,8 +1,6 @@
 import ejs from "ejs";
 import path from "path";
-// import puppeteer from "puppeteer";
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 
 export default async function handler(req, res) {
   ejs.renderFile(
@@ -14,11 +12,7 @@ export default async function handler(req, res) {
         res.status(500).json({ message: "Error Generating PDF" });
         return;
       }
-      const browser = await puppeteer.launch({
-        executablePath: await chromium.executablePath(),
-        headless: true,
-        ignoreHTTPSErrors: true,
-      });
+      const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: "networkidle0" });
       // await page.evaluate(() => {
