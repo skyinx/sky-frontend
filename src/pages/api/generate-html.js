@@ -120,16 +120,8 @@ export default async function handler(req, res) {
 `.replaceAll("\n", "");
 
   const buffer = Buffer.from(html, "utf8");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
-  res.setHeader("Access-Control-Max-Age", "1728000");
-  res.setHeader(
-    "Content-Disposition",
-    `attachment; filename=${data?.name}.html`,
-  );
   res.setHeader("Content-Type", "text/html");
   res.setHeader("Content-Length", buffer.length);
   res.end(buffer);
-  return res;
+  return res.status(200);
 }

@@ -18,7 +18,7 @@ const getQuery = (searchFields, searchValue = "") => {
 };
 
 const downloadPDF = async (data = {}) => {
-  const response = await fetch("/api/generate-pdf", {
+  const response = await fetch("/api/generate-html", {
     body: JSON.stringify(data),
     method: "post",
   });
