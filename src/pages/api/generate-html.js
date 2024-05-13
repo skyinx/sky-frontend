@@ -131,4 +131,5 @@ export default async function handler(req, res) {
   res.setHeader("Content-Type", "text/html");
   res.setHeader("Content-Length", buffer.length);
   res.end(buffer);
+  return res;
 }
