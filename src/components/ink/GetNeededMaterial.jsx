@@ -24,7 +24,7 @@ function GetNeededMaterial({ data }) {
           obj.percentage = Number(
             parseFloat(obj.percentage + percentage).toFixed(2),
           );
-          arr.push({ name: i[key.replace(/s$/, "")].name, price, percentage });
+          arr.push({ name: i[key.replace(/s$/, "")]?.name, price, percentage });
         });
         obj[key] = arr;
       }
