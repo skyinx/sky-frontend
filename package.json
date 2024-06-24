@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "sudo apt-get install wkhtmltopdf && pip3 install pdfkit && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
