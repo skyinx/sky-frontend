@@ -5,20 +5,30 @@ import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (values) => {
-    await post({
-      action: "login",
-      data: { ...values },
-    }).then(({ status, message }) => {
-      toast.success(message);
-      if (status === "success") router.push("/ink");
-    });
+    try {
+      setLoading(true);
+      await post({
+        action: "login",
+        data: { ...values },
+      }).then(({ status, message }) => {
+        toast.success(message);
+        setLoading(false);
+        if (status === "success") router.push("/ink");
+      });
+    } catch (error) {
+      console.log("Login Error: ", error);
+      setLoading(false);
+    }
   };
 
   const formProps = useForm({
@@ -54,6 +64,7 @@ export default function LoginPage() {
         </div>
         <Button
           outline
+          loading={loading}
           className="my-2 !h-[42px] w-full rounded-xl font-semibold"
           onClick={handleSubmit(onSubmit)}
         >
