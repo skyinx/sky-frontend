@@ -14,7 +14,7 @@ function Pigment() {
     <Wrapper
       title="Pigments"
       headerDetails={
-        <div className="flex items-center w-full gap-2">
+        <div className="flex w-full items-center gap-2">
           <Search title="Pigment" {...props} />
           <Button
             className="w-full"

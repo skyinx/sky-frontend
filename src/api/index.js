@@ -1,8 +1,6 @@
 import axios from "axios";
 import { apiList } from "@/api/list";
-// import Cookies from "js-cookie";
-
-// const accessToken = Cookies.get("pics_idea_token");
+import { toast } from "react-toastify";
 
 export const axiosApi = axios.create({
   baseURL: "/api/",
@@ -15,7 +13,7 @@ export const axiosApi = axios.create({
 
 axiosApi.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 const getApi = ({ parameters = [], module = "", action = "" }) => {
@@ -30,10 +28,14 @@ export async function get(props) {
 }
 
 export async function post(props) {
-  const { data, config = {} } = props;
+  const { data = {}, config = {} } = props;
   return await axiosApi
     .post(getApi(props), { ...data }, { ...config })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch(({ response }) => {
+      toast.error(response.data.message);
+      return { status: "failure" };
+    });
 }
 
 export async function put(props) {

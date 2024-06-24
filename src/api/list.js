@@ -15,5 +15,11 @@ export const apiList = {
     delete: {
       url: (id) => `${module}/delete/${id}`,
     },
+    login: {
+      url: () => "auth/signin",
+    },
+    logout: {
+      url: () => "auth/signout",
+    },
   }),
 };

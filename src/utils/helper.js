@@ -1,3 +1,5 @@
+import { jwtVerify } from "jose";
+
 const getQuery = (searchFields, searchValue = "") => {
   const query = {
     $or: [],
@@ -33,4 +35,19 @@ const downloadPDF = async (data = {}) => {
   link.click();
 };
 
-export { getQuery, downloadPDF };
+const getDataFromToken = async (token) => {
+  try {
+    const decodedToken = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.TOKEN_SECRET),
+    )
+      .then((res) => res?.payload || {})
+      .catch(() => {});
+
+    return { ...decodedToken };
+  } catch (error) {
+    console.log("error: ", error);
+    return {};
+  }
+};
+export { getQuery, downloadPDF, getDataFromToken };

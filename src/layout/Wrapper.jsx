@@ -9,54 +9,66 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import DrawerWrapper from "@/shared/Drawer";
-import { IoMdColorPalette } from "react-icons/io";
 import { BiSolidColor } from "react-icons/bi";
+import { MdOutlineExitToApp } from "react-icons/md";
+import { post } from "@/api";
+import { toast } from "react-toastify";
 
 const Wrapper = ({ title, children, headerDetails = "" }) => {
   const list = [
     {
-      icon: <IoColorFill className="w-6 h-6 group-hover:animate-wiggle" />,
+      icon: <IoColorFill className="h-6 w-6 group-hover:animate-wiggle" />,
       title: "Ink",
       href: "/ink",
     },
     {
       icon: (
-        <IoColorFilterSharp className="w-6 h-6 group-hover:animate-wiggle" />
+        <IoColorFilterSharp className="h-6 w-6 group-hover:animate-wiggle" />
       ),
       title: "Product",
       href: "/product",
     },
     {
-      icon: <BiSolidColor className="w-6 h-6 group-hover:animate-wiggle" />,
+      icon: <BiSolidColor className="h-6 w-6 group-hover:animate-wiggle" />,
       title: "Pigment",
       href: "/pigment",
     },
   ];
 
   const [open, setOpen] = useState(false);
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
+
+  const logout = async () => {
+    await post({
+      action: "logout",
+    }).then(({ message }) => {
+      toast.success(message);
+      push("/");
+    });
+  };
+
   return (
-    <main className={`min-h-screen sm:grid grid-cols-10 gap-2.5 p-1 sm:p-2.5`}>
-      <section className="relative rounded-xl flex flex-col gap-2 sm:hidden">
-        <div className="shadow-md bg-white relative flex items-center justify-end p-2 py-2 border rounded-lg border-primary z-0  w-full">
-          <p className="text-primary font-bold text-2xl text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <main className={`min-h-screen grid-cols-10 gap-2.5 p-1 sm:grid sm:p-2.5`}>
+      <section className="relative flex flex-col gap-2 rounded-xl sm:hidden">
+        <div className="relative z-0 flex w-full items-center justify-end rounded-lg border border-primary bg-white p-2 py-2  shadow-md">
+          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center text-2xl font-bold text-primary">
             Sky Inx
           </p>
           <span
-            className="border border-primary rounded-lg cursor-pointer p-1"
+            className="cursor-pointer rounded-lg border border-primary p-1"
             onClick={() => setOpen(!open)}
           >
             {open ? (
-              <IoClose className="text-primary w-8 h-8" />
+              <IoClose className="h-8 w-8 text-primary" />
             ) : (
-              <IoMenu className="text-primary w-8 h-8" />
+              <IoMenu className="h-8 w-8 text-primary" />
             )}
           </span>
         </div>
 
         <DrawerWrapper open={open} setOpen={setOpen}>
           <div
-            className={`w-full p-1 border rounded-lg flex-col justify-between bg-white h-full 
+            className={`h-full w-full flex-col justify-between rounded-lg border bg-white p-1 
               `}
           >
             <ul className="flex flex-col gap-1.5">
@@ -64,9 +76,9 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
                 return (
                   <Link href={href} key={title} className="group">
                     <li
-                      className={`flex justify-between items-center px-2 gap-2 h-12 border border-white rounded-lg font-semibold text-sm ${
+                      className={`flex h-12 items-center justify-between gap-2 rounded-lg border border-white px-2 text-sm font-semibold ${
                         pathname === href
-                          ? "bg-primary text-white border-primary"
+                          ? "border-primary bg-primary text-white"
                           : "hover:border hover:border-primary hover:text-black"
                       }`}
                     >
@@ -74,7 +86,7 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
                         {icon} {title}
                       </span>
                       <HiOutlineChevronRight
-                        className={`w-6 h-6 hidden text-primary group-hover:block ${
+                        className={`hidden h-6 w-6 text-primary group-hover:block ${
                           pathname === href
                             ? "group-hover:text-white"
                             : "group-hover:text-primary"
@@ -88,45 +100,60 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
           </div>
         </DrawerWrapper>
       </section>
-      <section className="hidden sm:col-span-3 xl:col-span-2 border p-2 rounded-xl bg-white sm:flex flex-col gap-2">
-        <div className="flex p-2 py-2 justify-center items-center border rounded-lg border-primary z-0 bg-primary bg-opacity-10">
-          <p className="text-primary font-bold text-2xl text-center">Sky Inx</p>
-        </div>
-        <div className="flex flex-col justify-between h-full">
-          <ul className="flex flex-col gap-1.5">
-            {list.map(({ title, href, icon }) => {
-              return (
-                <Link href={href} key={title} className="group">
-                  <li
-                    className={`flex justify-between items-center px-2 gap-2 h-12 border border-white rounded-lg font-semibold text-sm ${
-                      pathname === href
-                        ? "bg-primary text-white border-primary"
-                        : "hover:border hover:border-primary hover:text-black"
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      {icon} {title}
-                    </span>
-                    <HiOutlineChevronRight
-                      className={`w-6 h-6 hidden text-primary group-hover:block ${
+      <section className="hidden flex-col justify-between gap-2 rounded-xl border bg-white p-2 sm:col-span-3 sm:flex xl:col-span-2">
+        <div className="flex-col gap-2 sm:col-span-3 sm:flex xl:col-span-2">
+          <div className="z-0 flex items-center justify-center rounded-lg border border-primary bg-primary bg-opacity-10 p-2 py-2">
+            <p className="text-center text-2xl font-bold text-primary">
+              Sky Inx
+            </p>
+          </div>
+          <div className="flex h-full flex-col justify-between">
+            <ul className="flex flex-col gap-1.5">
+              {list.map(({ title, href, icon }) => {
+                return (
+                  <Link href={href} key={title} className="group">
+                    <li
+                      className={`flex h-12 items-center justify-between gap-2 rounded-lg border border-white px-2 text-sm font-semibold ${
                         pathname === href
-                          ? "group-hover:text-white"
-                          : "group-hover:text-primary"
+                          ? "border-primary bg-primary text-white"
+                          : "hover:border hover:border-primary hover:text-black"
                       }`}
-                    />
-                  </li>
-                </Link>
-              );
-            })}
-          </ul>
+                    >
+                      <span className="flex items-center gap-3">
+                        {icon} {title}
+                      </span>
+                      <HiOutlineChevronRight
+                        className={`hidden h-6 w-6 text-primary group-hover:block ${
+                          pathname === href
+                            ? "group-hover:text-white"
+                            : "group-hover:text-primary"
+                        }`}
+                      />
+                    </li>
+                  </Link>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+        <div className="group">
+          <li
+            onClick={logout}
+            className={`flex h-12 items-center gap-2 rounded-lg border border-primary bg-primary bg-opacity-10 px-2 text-sm font-bold text-primary hover:bg-primary hover:text-white`}
+          >
+            <MdOutlineExitToApp
+              className={`h-6 w-6 text-primary group-hover:block group-hover:text-white`}
+            />
+            <span className="flex items-center gap-3">Logout</span>
+          </li>
         </div>
       </section>
-      <section className="sm:col-span-7 xl:col-span-8 flex flex-col gap-2.5">
-        <nav className="h-16 flex pl-4 pr-2 items-center justify-between border rounded-xl bg-white text-xl font-semibold">
+      <section className="flex flex-col gap-2.5 sm:col-span-7 xl:col-span-8">
+        <nav className="flex h-16 items-center justify-between rounded-xl border bg-white pl-4 pr-2 text-xl font-semibold">
           {title}
           <div>{headerDetails}</div>
         </nav>
-        <div className="p-3 border rounded-xl h-full w-full overflow-y-auto bg-white">
+        <div className="h-full w-full overflow-y-auto rounded-xl border bg-white p-3">
           {children}
         </div>
       </section>

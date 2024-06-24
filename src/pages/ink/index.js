@@ -14,7 +14,7 @@ function Ink() {
     <Wrapper
       title="Inks"
       headerDetails={
-        <div className="flex items-center w-full gap-2">
+        <div className="flex w-full items-center gap-2">
           <Search title="Ink" {...props} />
           <Button
             className="w-full"

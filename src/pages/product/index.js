@@ -14,7 +14,7 @@ function Product() {
     <Wrapper
       title="Products"
       headerDetails={
-        <div className="flex items-center w-full gap-2">
+        <div className="flex w-full items-center gap-2">
           <Search title="Product" {...props} />
           <Button
             className="w-full"
