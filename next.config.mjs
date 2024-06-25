@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   publicRuntimeConfig: {
-    PUBLIC_NEXT_BASE_URL: process.env.PUBLIC_NEXT_BASE_URL,
+    NEXT_PUBLIC_PDF_PATH: process.env.NEXT_PUBLIC_PDF_PATH,
   },
 };
 

@@ -47,7 +47,11 @@ function GetNeededMaterial({ data }) {
         title="Needed Materials"
         modalFooter={
           <>
-            <Button onClick={() => downloadPDF({ ...list, name: data?.name })}>
+            <Button
+              onClick={() => {
+                downloadPDF({ ...list, name: data?.name });
+              }}
+            >
               Export
             </Button>
             <Button outline onClick={() => setOpen(false)}>

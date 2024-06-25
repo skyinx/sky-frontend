@@ -20,10 +20,18 @@ const getQuery = (searchFields, searchValue = "") => {
 };
 
 const downloadPDF = async (data = {}) => {
-  const response = await fetch("/api/generate-html", {
+  const apiUrl = process.env.NEXT_PUBLIC_PDF_PATH;
+
+  const response = await fetch(apiUrl + "/generate-pdf", {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
-    method: "post",
   });
+
   const name = data?.name
     ?.replace(/\s+/g, " ")
     .replace(/ /g, "-")
