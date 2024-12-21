@@ -32,7 +32,7 @@ const HistoryColumns = (props) => {
       },
       {
         Header: "Date",
-        accessor: "type",
+        accessor: "date",
         Cell: ({ row: { original } }) => {
           return (
             <p className="!font-semibold capitalize !text-black">
