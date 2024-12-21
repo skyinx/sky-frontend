@@ -38,7 +38,7 @@ const Pagination = ({
         <select
           defaultValue={10}
           value={pageLimit}
-          className="px-2 py-2 text-xs bg-transparent border rounded-xl outline-none h-11 border-gray-300"
+          className="h-11 rounded-xl border border-gray-300 bg-transparent px-2 py-2 text-xs outline-none"
           onChange={handleLimitChange}
         >
           {[10, 15, 20, 30, 50].map((pageSize) => (
@@ -65,7 +65,7 @@ const Pagination = ({
         <div className="flex items-center gap-1 text-xs">
           Page
           <Input
-            className="h-11 flex items-center justify-center py-2 text-base text-center border rounded-md outline-none !w-12 border-gray-300"
+            className="flex h-11 !w-12 items-center justify-center rounded-md border border-gray-300 py-2 text-center text-base outline-none"
             onChange={(event) => goToPage(event)}
             value={page}
             disabled
@@ -97,8 +97,8 @@ const Table = ({
     useTable({ columns, data });
 
   return (
-    <div className="relative overflow-hidden bg-white border rounded-lg border-gray-300 flex flex-col justify-between">
-      <div className={`overflow-y-auto h-[565px] ${className}`}>
+    <div className="relative flex flex-col justify-between overflow-hidden rounded-lg border border-gray-300 bg-white">
+      <div className={`h-[630px] overflow-y-auto ${className}`}>
         {loading && <Loader relative />}
         <table className="w-full text-sm" {...getTableProps()}>
           <thead>

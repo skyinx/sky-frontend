@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
-import ConfirmDelete from "@/components/common/delete/ConfirmDelete";
+import Modal from "@/shared/Modal";
 import { del } from "@/api";
 
-const Delete = ({ id, title, module = "", getData = async () => {} }) => {
+const Delete = ({
+  id,
+  module = "",
+  getData = async () => {},
+  title = "Are you sure ?",
+  description = "This action cannot be undone. All values associated with this field will be lost.",
+}) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -26,15 +32,17 @@ const Delete = ({ id, title, module = "", getData = async () => {} }) => {
   return (
     <div>
       <MdDelete
-        className="w-5 h-5 text-rose-600 cursor-pointer"
+        className="h-5 w-5 cursor-pointer text-rose-600"
         onClick={() => setOpen(true)}
       />
-      <ConfirmDelete
+      <Modal
         open={open}
         title={title}
+        setOpen={setOpen}
         loading={loading}
         onConfirm={onConfirm}
         onDecline={onDecline}
+        description={description}
       />
     </div>
   );

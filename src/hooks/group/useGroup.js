@@ -1,11 +1,12 @@
 import { post } from "@/api";
 import { LIMIT } from "@/constants/common";
 import { getQuery } from "@/utils/helper";
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 const SEARCH = ["name"];
 
-function useProduct() {
+function useGroup() {
   const [data, setData] = useState([]);
   const [paginator, setPaginator] = useState([]);
   const [search, setSearch] = useState("");
@@ -18,11 +19,18 @@ function useProduct() {
     try {
       setLoading(true);
       await post({
-        module: "product",
+        module: "label",
         action: "list",
         data: {
-          query: { ...getQuery(SEARCH, search) },
-          options: { populate: ["products.product"], page, limit: pageLimit },
+          query: {
+            ...getQuery(SEARCH, search),
+            $and: [{ isActive: false, group: { $exists: false } }],
+          },
+          options: {
+            populate: ["ink"],
+            page,
+            limit: pageLimit,
+          },
         },
       }).then(({ data: response = {} }) => {
         const { data = [], paginator = {} } = response || {};
@@ -30,9 +38,33 @@ function useProduct() {
         setPaginator(paginator);
       });
     } catch (error) {
-      console.error("Get Product: ", error);
+      console.error("Get Group: ", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePrintAll = async () => {
+    try {
+      setLoading(true);
+      const name = `Group.${moment().format("DD.MM.YYYY ( hh.mm A )")}`;
+      const response = await post({
+        module: "group",
+        action: "printAll",
+        data: {},
+        config: { responseType: "blob" },
+      });
+      if (response) {
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(response);
+        link.download = `${name}.pdf`;
+        link.click();
+      }
+    } catch (error) {
+      console.error("Print Group: ", error);
+    } finally {
+      setLoading(false);
+      getData();
     }
   };
 
@@ -52,7 +84,8 @@ function useProduct() {
     paginator,
     editData,
     setEditData,
+    handlePrintAll,
   };
 }
 
-export default useProduct;
+export default useGroup;

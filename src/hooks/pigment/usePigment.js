@@ -24,7 +24,8 @@ function usePigment() {
           query: { ...getQuery(SEARCH, search) },
           options: { page, limit: pageLimit },
         },
-      }).then(({ data = [], paginator = {} }) => {
+      }).then(({ data: response = {} }) => {
+        const { data = [], paginator = {} } = response || {};
         setData(data);
         setPaginator(paginator);
       });

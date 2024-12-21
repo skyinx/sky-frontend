@@ -5,24 +5,34 @@ import { useEffect, useState } from "react";
 
 const SEARCH = ["name"];
 
-function useProduct() {
+function useHistory() {
   const [data, setData] = useState([]);
   const [paginator, setPaginator] = useState([]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pageLimit, setPageLimit] = useState(LIMIT);
-  const [editData, setEditData] = useState();
 
   const getData = async (page = 1) => {
     try {
       setLoading(true);
       await post({
-        module: "product",
+        module: "history",
         action: "list",
         data: {
-          query: { ...getQuery(SEARCH, search) },
-          options: { populate: ["products.product"], page, limit: pageLimit },
+          query: {},
+          options: {
+            populate: [
+              "group",
+              {
+                path: "label",
+                model: "Label",
+                populate: { path: "ink", model: "Ink" },
+              },
+            ],
+            page,
+            limit: pageLimit,
+          },
         },
       }).then(({ data: response = {} }) => {
         const { data = [], paginator = {} } = response || {};
@@ -30,9 +40,28 @@ function useProduct() {
         setPaginator(paginator);
       });
     } catch (error) {
-      console.error("Get Product: ", error);
+      console.error("Get History: ", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePrint = async (data = {}) => {
+    const response = await post({
+      module: "history",
+      action: "print",
+      data: {
+        type: data?.type,
+        id: data?.type === "label" ? data?.label?._id : data?.group?._id,
+      },
+      config: { responseType: "blob" },
+    });
+
+    if (response) {
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(response);
+      link.download = `${data.name}.pdf`;
+      link.click();
     }
   };
 
@@ -50,9 +79,8 @@ function useProduct() {
     setPageLimit,
     setSearch,
     paginator,
-    editData,
-    setEditData,
+    handlePrint,
   };
 }
 
-export default useProduct;
+export default useHistory;

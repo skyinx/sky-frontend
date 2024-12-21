@@ -36,7 +36,7 @@ const Dropdown = ({
     placeholder: (defaultStyles) => {
       return {
         ...defaultStyles,
-         textTransform: 'capitalize'
+        textTransform: 'capitalize'
       };
     },
     option: (provided, { isFocused }) => ({
@@ -106,7 +106,7 @@ const Dropdown = ({
         },
       },
     }).then(({ data }) => {
-      return data?.map((r) => ({
+      return data?.data?.map((r) => ({
         ...r,
         label: r.name,
         value: r._id,

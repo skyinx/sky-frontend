@@ -28,7 +28,8 @@ function useInk() {
             limit: pageLimit,
           },
         },
-      }).then(({ data = [], paginator = {} }) => {
+      }).then(({ data: response = {} }) => {
+        const { data = [], paginator = {} } = response || {};
         setData(data);
         setPaginator(paginator);
       });

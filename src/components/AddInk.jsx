@@ -2,12 +2,13 @@
 import DrawerWrapper from "@/shared/Drawer";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { inkSchema } from "@/schema/ink";
 import AddSubItem from "@/components/ink/AddSubItem";
-import { post } from "@/api";
+import { post, put } from "@/api";
+import Modal from "@/shared/Modal";
 
 const defaultValues = {
   name: undefined,
@@ -25,6 +26,7 @@ const AddInk = ({
   setEditData = () => {},
   getData = async () => {},
 }) => {
+  const [confirm, setConfirm] = useState(false);
   const formProps = useForm({
     defaultValues,
     mode: "onChange",
@@ -36,7 +38,6 @@ const AddInk = ({
     register,
     formState: { errors },
     handleSubmit,
-    watch,
     setValue,
     getValues,
   } = formProps;
@@ -45,6 +46,7 @@ const AddInk = ({
     await getData();
     setOpen(false);
     setLoading(false);
+    setConfirm(false);
     setTimeout(() => setEditData(null), 200);
   };
 
@@ -93,21 +95,23 @@ const AddInk = ({
     return payload;
   };
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values, create) => {
     try {
       setLoading(true);
       const payload = await getPayload(values);
-      await post({
-        module: "ink",
-        action: values?._id ? "update" : "create",
-        parameters: [values?._id],
-        data: payload,
-      });
+      if (create) {
+        await post({ module: "ink", action: "create", data: payload });
+      } else {
+        await put({
+          module: "ink",
+          action: "update",
+          parameters: [values?._id],
+          data: payload,
+        });
+      }
     } catch (error) {
       console.error("Add Ink Error: ", error);
-      setLoading(false);
     } finally {
-      setLoading(false);
       handleClear();
     }
   };
@@ -158,47 +162,76 @@ const AddInk = ({
     setValue(`${name}Per`, undefined);
   };
 
+  const handleConfirm = () => {
+    if (editData) {
+      setConfirm(true);
+    } else {
+      handleSubmit(onSubmit);
+    }
+  };
+
+  const onConfirm = async () => {
+    await handleSubmit(onSubmit)(true);
+  };
+
+  const onDecline = async () => {
+    await handleSubmit(onSubmit)(false);
+  };
+
   return (
-    <DrawerWrapper
-      title={editData ? "Update Ink" : "Add Ink"}
-      modalFooter={
-        <>
-          <Button outline onClick={handleClear}>
-            Cancel
-          </Button>
-          <Button
-            loading={loading}
-            className="border border-primary"
-            onClick={handleSubmit(onSubmit)}
-          >
-            {editData ? "Update" : "Save"}
-          </Button>
-        </>
-      }
-      open={open}
-      setOpen={setOpen}
-    >
-      <div className="space-y-3">
-        <Input
-          label={"Name"}
-          placeholder="Enter Name"
-          rest={register("name")}
-          error={errors.name?.message}
-        />
-        <AddSubItem
-          {...formProps}
-          name="pigment"
-          handleAdd={handleAdd}
-          handleRemove={handleRemove}
-        />
-        <AddSubItem
-          {...formProps}
-          name="product"
-          handleAdd={handleAdd}
-          handleRemove={handleRemove}
-        />
-      </div>
-    </DrawerWrapper>
+    <>
+      <DrawerWrapper
+        title={editData ? "Update Ink" : "Add Ink"}
+        modalFooter={
+          <>
+            <Button outline onClick={handleClear}>
+              Cancel
+            </Button>
+            <Button
+              loading={loading}
+              className="border border-primary"
+              onClick={handleConfirm}
+            >
+              {editData ? "Update" : "Save"}
+            </Button>
+          </>
+        }
+        open={open}
+        setOpen={setOpen}
+      >
+        <div className="space-y-3">
+          <Input
+            label={"Name"}
+            placeholder="Enter Name"
+            rest={register("name")}
+            error={errors.name?.message}
+          />
+          <AddSubItem
+            {...formProps}
+            name="pigment"
+            handleAdd={handleAdd}
+            handleRemove={handleRemove}
+          />
+          <AddSubItem
+            {...formProps}
+            name="product"
+            handleAdd={handleAdd}
+            handleRemove={handleRemove}
+          />
+        </div>
+      </DrawerWrapper>
+      <Modal
+        open={confirm}
+        loading={loading}
+        setOpen={setConfirm}
+        onConfirm={onConfirm}
+        onDecline={onDecline}
+        title="Are you sure ?"
+        confirmBtn="Create New"
+        cancelBtn="Just Update"
+        description="Do you want to create new Ink or edit existing one ?"
+      />
+    </>
   );
 };
 

@@ -3,17 +3,34 @@ import { apiList } from "@/api/list";
 import { toast } from "react-toastify";
 
 export const axiosApi = axios.create({
-  baseURL: "/api/",
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/`,
 });
 
-// if (accessToken)
-//   axiosApi.defaults.headers.common["Authorization"] = `Bearer ${
-//     accessToken ?? null
-//   }`;
+const isWindow = typeof window !== "undefined";
+
+export const logout = async () => {
+  await axios.post("/api/auth/signout", { token: "" }).then(({ message }) => {
+    toast.success(message);
+    axiosApi.defaults.headers.common["Authorization"] = undefined;
+    localStorage.removeItem("token");
+    window.location.replace("/");
+  });
+};
+
+const token = isWindow ? localStorage.getItem("token") : null;
+
+if (token) {
+  axiosApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
 
 axiosApi.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error),
+  (error) => {
+    if (error.status === 401) {
+      logout();
+    }
+    return Promise.reject(error);
+  },
 );
 
 const getApi = ({ parameters = [], module = "", action = "" }) => {
@@ -33,7 +50,9 @@ export async function post(props) {
     .post(getApi(props), { ...data }, { ...config })
     .then((response) => response.data)
     .catch(({ response }) => {
-      toast.error(response.data.message);
+      if (response?.data?.message) {
+        toast.error(response.data.message);
+      }
       return { status: "failure" };
     });
 }

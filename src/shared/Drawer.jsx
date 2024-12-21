@@ -17,7 +17,7 @@ const DrawerWrapper = ({
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 overflow-hidden z-[999]"
+        className="fixed inset-0 z-[99] overflow-hidden"
         onClose={() => false}
       >
         <div className="absolute inset-0 overflow-hidden">
@@ -32,7 +32,7 @@ const DrawerWrapper = ({
           >
             <Dialog.Overlay className="absolute inset-0 bg-black bg-opacity-50 transition-opacity" />
           </Transition.Child>
-          <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+          <div className="fixed inset-y-0 right-0 flex max-w-full pl-10">
             <Transition.Child
               as={Fragment}
               enter="transform transition ease-in-out duration-500"
@@ -52,10 +52,10 @@ const DrawerWrapper = ({
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <div className="absolute top-0 left-0 -ml-12 pt-4 pr-2 flex sm:-ml-10 sm:pr-4">
+                  <div className="absolute left-0 top-0 -ml-12 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
                     <button
                       type="button"
-                      className="rounded-full bg-white border  border-white hover:border-red hover:text-red h-8 w-8 flex items-center justify-center focus:outline-none hover:rotate-90 transition"
+                      className="hover:border-red hover:text-red flex  h-8 w-8 items-center justify-center rounded-full border border-white bg-white transition hover:rotate-90 focus:outline-none"
                       onClick={() => setOpen(false)}
                     >
                       <span className="sr-only">Close panel</span>
@@ -63,9 +63,9 @@ const DrawerWrapper = ({
                     </button>
                   </div>
                 </Transition.Child>
-                <div className="h-full flex flex-col shadow-xl overflow-y-scroll bg-white">
+                <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                   {title ? (
-                    <div className="px-4 sm:px-6 py-5 bg-light border-b h-16">
+                    <div className="h-16 border-b bg-light px-4 py-5 sm:px-6">
                       <Dialog.Title className="text-base font-bold">
                         {title}
                       </Dialog.Title>
@@ -73,13 +73,13 @@ const DrawerWrapper = ({
                   ) : (
                     <></>
                   )}
-                  <div className="relative flex-1 px-6 py-6 overflow-auto">
+                  <div className="relative flex-1 overflow-auto px-6 py-6">
                     {/* Replace with your content */}
                     {children}
                     {/* /End replace */}
                   </div>
                   {modalFooter ? (
-                    <div className="modal-footer px-4 py-4 bg-light border-t flex items-center justify-end gap-3">
+                    <div className="modal-footer flex items-center justify-end gap-3 border-t bg-light px-4 py-4">
                       {modalFooter}
                     </div>
                   ) : (

@@ -4,6 +4,7 @@ import {
   IoMenu,
   IoClose,
   IoColorFilterSharp,
+  IoFileTrayFull,
 } from "react-icons/io5";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import Link from "next/link";
@@ -11,8 +12,7 @@ import { useRouter } from "next/router";
 import DrawerWrapper from "@/shared/Drawer";
 import { BiSolidColor } from "react-icons/bi";
 import { MdOutlineExitToApp } from "react-icons/md";
-import { post } from "@/api";
-import { toast } from "react-toastify";
+import { logout } from "@/api";
 
 const Wrapper = ({ title, children, headerDetails = "" }) => {
   const list = [
@@ -33,19 +33,15 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
       title: "Pigment",
       href: "/pigment",
     },
+    {
+      icon: <IoFileTrayFull className="h-6 w-6 group-hover:animate-wiggle" />,
+      title: "History",
+      href: "/history",
+    },
   ];
 
   const [open, setOpen] = useState(false);
-  const { pathname, push } = useRouter();
-
-  const logout = async () => {
-    await post({
-      action: "logout",
-    }).then(({ message }) => {
-      toast.success(message);
-      push("/");
-    });
-  };
+  const { pathname } = useRouter();
 
   return (
     <main className={`min-h-screen grid-cols-10 gap-2.5 p-1 sm:grid sm:p-2.5`}>
@@ -151,7 +147,14 @@ const Wrapper = ({ title, children, headerDetails = "" }) => {
       <section className="flex flex-col gap-2.5 sm:col-span-7 xl:col-span-8">
         <nav className="flex h-16 items-center justify-between rounded-xl border bg-white pl-4 pr-2 text-xl font-semibold">
           {title}
-          <div>{headerDetails}</div>
+          <div className="flex">
+            {headerDetails}
+            <Link href={"/group"} key={title} className="group">
+              <div className="ml-2 flex h-[42px] w-14 items-center justify-center rounded-lg border border-primary bg-primary text-white">
+                <IoFileTrayFull className="h-6 w-6 group-hover:animate-wiggle" />
+              </div>
+            </Link>
+          </div>
         </nav>
         <div className="h-full w-full overflow-y-auto rounded-xl border bg-white p-3">
           {children}

@@ -3,12 +3,14 @@ import Button from "@/widgets/Button";
 import React, { useEffect, useState } from "react";
 import { AiFillCalculator } from "react-icons/ai";
 import Input from "@/widgets/Input";
-import { downloadPDF } from "@/utils/helper";
+import useLabel from "@/hooks/label/useLabel";
 
 function GetNeededMaterial({ data }) {
   const [open, setOpen] = useState(false);
   const [list, setList] = useState();
   const [need, setNeed] = useState(0);
+
+  const { loading, printLabel, addToGroup } = useLabel({ setOpen });
 
   const getData = (need) => {
     const obj = { price: 0, percentage: 0, products: [], pigments: [] };
@@ -37,6 +39,12 @@ function GetNeededMaterial({ data }) {
     getData(need);
   }, [need]);
 
+  useEffect(() => {
+    if (!open) {
+      setNeed(0);
+    }
+  }, [open]);
+
   return (
     <div>
       <AiFillCalculator
@@ -48,11 +56,26 @@ function GetNeededMaterial({ data }) {
         modalFooter={
           <>
             <Button
+              loading={loading === "group"}
+              disabled={!!loading}
               onClick={() => {
-                downloadPDF({ ...list, name: data?.name });
+                addToGroup({ ink: data?._id, percentage: need });
               }}
             >
-              Export
+              Add To Group
+            </Button>
+            <Button
+              loading={loading === "print"}
+              disabled={!!loading}
+              onClick={() => {
+                printLabel({
+                  ink: data?._id,
+                  percentage: need,
+                  name: data?.name,
+                });
+              }}
+            >
+              Print Label
             </Button>
             <Button outline onClick={() => setOpen(false)}>
               Cancel
@@ -70,85 +93,99 @@ function GetNeededMaterial({ data }) {
             onChange={(e) => setNeed(e.target.value)}
           />
           <main className="space-y-4">
-            <h1 className="flex h-12 items-center justify-start rounded-xl border border-red-600 bg-red-600 bg-opacity-10 px-4 text-lg font-semibold text-red-600">
+            <h1 className="text-md flex min-h-12 items-center justify-start rounded-xl border border-red-600 bg-red-600 bg-opacity-10 px-4 py-2 font-bold text-red-600">
               {data?.name}
             </h1>
             <div className="flow-root rounded-xl border border-primary">
               <table className="min-w-full">
                 <tbody className="[&>tr>th]:!font-extrabold">
-                  <tr className="h-12 border-b border-primary text-black">
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-semibold"
-                    >
-                      Pigment
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-right text-sm font-semibold"
-                    >
-                      Percentage
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-right text-sm font-semibold"
-                    >
-                      Price
-                    </th>
-                  </tr>
-                  {list?.pigments?.map(({ name, price, percentage }, key) => {
-                    return (
-                      <tr key={key} className="border-b border-gray-200">
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                          {name}
-                        </td>
-                        <td className="px-4 py-3 text-right text-sm text-gray-500">
-                          {percentage}
-                        </td>
-                        <td className="px-4 py-3 text-right text-sm text-gray-500">
-                          {price}
-                        </td>
+                  {list?.pigments?.length > 0 && (
+                    <>
+                      <tr className="h-12 border-b border-primary text-black">
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-left text-sm font-semibold"
+                        >
+                          Pigment
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-sm font-semibold"
+                        >
+                          Percentage
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-sm font-semibold"
+                        >
+                          Price
+                        </th>
                       </tr>
-                    );
-                  })}
+                      {list?.pigments?.map(
+                        ({ name, price, percentage }, key) => {
+                          return (
+                            <tr key={key} className="border-b border-gray-200">
+                              <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                {name}
+                              </td>
+                              <td className="px-4 py-3 text-right text-sm text-gray-500">
+                                {percentage}
+                              </td>
+                              <td className="px-4 py-3 text-right text-sm text-gray-500">
+                                {price}
+                              </td>
+                            </tr>
+                          );
+                        },
+                      )}
 
-                  <tr className="h-0 border-b border-primary"></tr>
-                  <tr className="h-12 border-b border-primary text-black">
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-semibold"
-                    >
-                      Product
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-right text-sm font-semibold"
-                    >
-                      Percentage
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-right text-sm font-semibold"
-                    >
-                      Price
-                    </th>
-                  </tr>
-                  {list?.products?.map(({ name, price, percentage }, key) => {
-                    return (
-                      <tr key={key} className="border-b border-gray-200">
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                          {name}
-                        </td>
-                        <td className="px-4 py-3 text-right text-sm text-gray-500">
-                          {percentage}
-                        </td>
-                        <td className="px-4 py-3 text-right text-sm text-gray-500">
-                          {price}
-                        </td>
+                      <tr className="h-0 border-b border-primary" />
+                    </>
+                  )}
+
+                  {list?.products?.length > 0 && (
+                    <>
+                      <tr className="h-12 border-b border-primary text-black">
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-left text-sm font-semibold"
+                        >
+                          Product
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-sm font-semibold"
+                        >
+                          Percentage
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-sm font-semibold"
+                        >
+                          Price
+                        </th>
                       </tr>
-                    );
-                  })}
-                  <tr className="h-0 border-b border-primary"></tr>
+                      {list?.products?.map(
+                        ({ name, price, percentage }, key) => {
+                          return (
+                            <tr key={key} className="border-b border-gray-200">
+                              <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                {name}
+                              </td>
+                              <td className="px-4 py-3 text-right text-sm text-gray-500">
+                                {percentage}
+                              </td>
+                              <td className="px-4 py-3 text-right text-sm text-gray-500">
+                                {price}
+                              </td>
+                            </tr>
+                          );
+                        },
+                      )}
+                      <tr className="h-0 border-b border-primary"></tr>
+                    </>
+                  )}
+
                   <tr className="h-12">
                     <th className="px-4 py-3 text-left text-sm font-semibold text-black">
                       Total

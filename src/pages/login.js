@@ -1,9 +1,9 @@
-// pages/login.js
-import { post } from "@/api";
+import { axiosApi, post } from "@/api";
 import { loginSchema } from "@/schema/login";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,10 +20,14 @@ export default function LoginPage() {
       await post({
         action: "login",
         data: { ...values },
-      }).then(({ status, message }) => {
+      }).then(async ({ data, message }) => {
+        const token = data.token;
+        await axios.post("/api/auth/signin", { token });
+        axiosApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        localStorage.setItem("token", token);
         toast.success(message);
         setLoading(false);
-        if (status === "success") router.push("/ink");
+        router.push("/ink");
       });
     } catch (error) {
       console.log("Login Error: ", error);

@@ -15,11 +15,14 @@ export const apiList = {
     delete: {
       url: (id) => `${module}/delete/${id}`,
     },
-    login: {
-      url: () => "auth/signin",
+    print: {
+      url: () => `${module}/print`,
     },
-    logout: {
-      url: () => "auth/signout",
+    printAll: {
+      url: () => `${module}/create-and-print`,
+    },
+    login: {
+      url: () => "user/login",
     },
   }),
 };

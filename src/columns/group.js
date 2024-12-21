@@ -1,9 +1,8 @@
 import Delete from "@/components/common/delete";
-import GetNeededMaterial from "@/components/ink/GetNeededMaterial";
 import { useMemo } from "react";
 import { MdEdit } from "react-icons/md";
 
-const InkColumns = (props) => {
+const GroupColumns = (props) => {
   const { setEditData, setOpen, paginator } = props || {};
   const columns = useMemo(
     () => [
@@ -20,30 +19,9 @@ const InkColumns = (props) => {
       },
       {
         Header: "Name",
-        accessor: "name",
+        accessor: "ink.name",
       },
-      {
-        Header: "Pigment",
-        accessor: "pigments.length",
-        Cell: ({ row: { original } }) => {
-          return (
-            <p className="flex h-6 w-6 items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary">
-              {original.pigments.length}
-            </p>
-          );
-        },
-      },
-      {
-        Header: "Products",
-        accessor: "products.length",
-        Cell: ({ row: { original } }) => {
-          return (
-            <p className="flex h-6 w-6 items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary">
-              {original.products.length}
-            </p>
-          );
-        },
-      },
+
       {
         Header: "Percentage (%)",
         accessor: "percentage",
@@ -64,8 +42,7 @@ const InkColumns = (props) => {
                   setOpen(true), setEditData(original);
                 }}
               />
-              <Delete {...props} module="ink" id={original?._id} />
-              <GetNeededMaterial data={original} />
+              <Delete {...props} module="label" id={original?._id} />
             </div>
           );
         },
@@ -76,4 +53,4 @@ const InkColumns = (props) => {
   return columns;
 };
 
-export default InkColumns;
+export default GroupColumns;
