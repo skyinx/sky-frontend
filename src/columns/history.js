@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import { useMemo } from "react";
 import { MdDownload } from "react-icons/md";
 
@@ -26,6 +26,19 @@ const HistoryColumns = (props) => {
               {original.type === "label"
                 ? original?.label?.name
                 : original?.group?.name}
+            </p>
+          );
+        },
+      },
+      {
+        Header: "Date",
+        accessor: "type",
+        Cell: ({ row: { original } }) => {
+          return (
+            <p className="!font-semibold capitalize !text-black">
+              {moment(original.createdAt)
+                .tz("Asia/Kolkata")
+                .format("DD-MM-YYYY ( hh:mm A )")}
             </p>
           );
         },
