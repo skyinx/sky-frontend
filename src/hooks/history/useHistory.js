@@ -47,6 +47,7 @@ function useHistory() {
   };
 
   const handlePrint = async (data = {}) => {
+    const name = data?.type === "label" ? data?.label?.name : data?.group?.name;
     const response = await post({
       module: "history",
       action: "print",
@@ -60,7 +61,7 @@ function useHistory() {
     if (response) {
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(response);
-      link.download = `${data.name}.pdf`;
+      link.download = `${name}.pdf`;
       link.click();
     }
   };
