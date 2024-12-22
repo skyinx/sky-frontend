@@ -2,7 +2,7 @@
 import DrawerWrapper from "@/shared/Drawer";
 import Button from "@/widgets/Button";
 import Input from "@/widgets/Input";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { inkSchema } from "@/schema/ink";
@@ -38,6 +38,7 @@ const AddInk = ({
     register,
     formState: { errors },
     handleSubmit,
+    watch,
     setValue,
     getValues,
   } = formProps;
@@ -142,6 +143,18 @@ const AddInk = ({
     }
   }, [editData, open]);
 
+  const total = useMemo(() => {
+    const pigments = watch("pigments") || [];
+    const products = watch("products") || [];
+    const pigPer = pigments?.reduce((acc, item) => {
+      return formatValue(acc + formatValue(item?.percentage));
+    }, 0);
+    const proPer = products?.reduce((acc, item) => {
+      return formatValue  (acc + formatValue(item?.percentage));
+    }, 0);
+    return pigPer + proPer;
+  }, [watch("pigments"), watch("products")]);
+
   const handleRemove = (index, name) => {
     const list = getValues(`${name}s`)?.filter((_, idx) => idx !== index);
     setValue(`${name}s`, list);
@@ -199,25 +212,35 @@ const AddInk = ({
         open={open}
         setOpen={setOpen}
       >
-        <div className="space-y-3">
-          <Input
-            label={"Name"}
-            placeholder="Enter Name"
-            rest={register("name")}
-            error={errors.name?.message}
-          />
-          <AddSubItem
-            {...formProps}
-            name="pigment"
-            handleAdd={handleAdd}
-            handleRemove={handleRemove}
-          />
-          <AddSubItem
-            {...formProps}
-            name="product"
-            handleAdd={handleAdd}
-            handleRemove={handleRemove}
-          />
+        <div className="flex h-full flex-col justify-between">
+          <div className="h-full space-y-3 overflow-auto px-0.5">
+            <Input
+              label={"Name"}
+              placeholder="Enter Name"
+              rest={register("name")}
+              error={errors.name?.message}
+            />
+            <AddSubItem
+              {...formProps}
+              name="pigment"
+              handleAdd={handleAdd}
+              handleRemove={handleRemove}
+            />
+            <AddSubItem
+              {...formProps}
+              name="product"
+              handleAdd={handleAdd}
+              handleRemove={handleRemove}
+            />
+          </div>
+          <div>
+            <div
+              className={`mx-0.5 mt-3 flex w-full items-center justify-between rounded-xl border border-gray-300 bg-white p-3 text-left text-xs font-medium text-black transition`}
+            >
+              <p>Total</p>
+              <p>{total}</p>
+            </div>
+          </div>
         </div>
       </DrawerWrapper>
       <Modal

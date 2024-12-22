@@ -36,7 +36,7 @@ const Dropdown = ({
     placeholder: (defaultStyles) => {
       return {
         ...defaultStyles,
-        textTransform: 'capitalize'
+        textTransform: "capitalize",
       };
     },
     option: (provided, { isFocused }) => ({
@@ -102,7 +102,7 @@ const Dropdown = ({
           ...getQuery(searchFields, search),
         },
         options: {
-          limit: 5,
+          noLimit: true,
         },
       },
     }).then(({ data }) => {
