@@ -3,9 +3,20 @@ import { useMemo } from "react";
 import { MdEdit } from "react-icons/md";
 
 const PigmentColumns = (props) => {
-  const { setEditData, setOpen } = props || {};
+  const { setEditData, setOpen, paginator } = props || {};
   const columns = useMemo(
     () => [
+      {
+        Header: "Sr No.",
+        accessor: "no",
+        Cell: ({ row: { index } }) => {
+          return (
+            <p className="!font-semibold !text-black">
+              {paginator.slNo + index}
+            </p>
+          );
+        },
+      },
       {
         Header: "Name",
         accessor: "name",
@@ -21,7 +32,7 @@ const PigmentColumns = (props) => {
           return (
             <div className="flex items-center justify-start gap-1">
               <MdEdit
-                className="w-5 h-5 cursor-pointer"
+                className="h-5 w-5 cursor-pointer"
                 onClick={() => {
                   setOpen(true), setEditData(original);
                 }}
@@ -32,7 +43,7 @@ const PigmentColumns = (props) => {
         },
       },
     ],
-    []
+    [paginator],
   );
   return columns;
 };
