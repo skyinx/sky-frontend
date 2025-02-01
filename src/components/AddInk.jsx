@@ -150,7 +150,7 @@ const AddInk = ({
       return formatValue(acc + formatValue(item?.percentage));
     }, 0);
     const proPer = products?.reduce((acc, item) => {
-      return formatValue  (acc + formatValue(item?.percentage));
+      return formatValue(acc + formatValue(item?.percentage));
     }, 0);
     return pigPer + proPer;
   }, [watch("pigments"), watch("products")]);
@@ -179,7 +179,7 @@ const AddInk = ({
     if (editData) {
       setConfirm(true);
     } else {
-      handleSubmit(onSubmit);
+      handleSubmit(onSubmit)(true);
     }
   };
 
